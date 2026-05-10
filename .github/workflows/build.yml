@@ -1,4 +1,4 @@
-name: Build
+name: Build & Test
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build iOS App
+    name: Build & Test
     runs-on: macos-latest
     strategy:
       matrix:
@@ -21,8 +21,7 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode-version }}.app/Contents/Developer
 
       - name: Install XcodeGen
-        run: |
-          brew install xcodegen
+        run: brew install xcodegen
 
       - name: Generate Xcode Project
         run: xcodegen generate
@@ -33,6 +32,28 @@ jobs:
             -project XHSCopywriter.xcodeproj \
             -scheme XHSCopywriter \
             -sdk iphoneos \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+
+      - name: Unit Tests
+        run: |
+          xcodebuild test \
+            -project XHSCopywriter.xcodeproj \
+            -scheme XHSCopywriterUnitTests \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO | xcpretty
+
+      - name: UI Tests
+        run: |
+          xcodebuild test \
+            -project XHSCopywriter.xcodeproj \
+            -scheme XHSCopywriterUITests \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO | xcpretty
