@@ -55,7 +55,7 @@ struct ContentView: View {
                 if !vm.inputText.isEmpty {
                     Text("\(vm.inputText.count)")
                         .font(.caption)
-                        .foregroundColor(.tertiary)
+                        .foregroundColor(Color(.tertiaryLabel))
                 }
             }
             
@@ -72,7 +72,7 @@ struct ContentView: View {
                 .overlay(alignment: .topLeading) {
                     if vm.inputText.isEmpty {
                         Text("产品名、关键词、一句话描述...")
-                            .foregroundColor(.tertiary)
+                            .foregroundColor(Color(.tertiaryLabel))
                             .padding(.horizontal, 14)
                             .padding(.vertical, 14)
                             .allowsHitTesting(false)
@@ -115,7 +115,7 @@ struct ContentView: View {
             VStack(spacing: 4) {
                 Text(style.icon)
                     .font(.title2)
-                Text(style.rawValue)
+                Text(style.displayName)
                     .font(.subheadline.weight(.medium))
                 Text(style.description)
                     .font(.caption2)
@@ -167,12 +167,11 @@ struct ContentView: View {
     
     private var resultCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // 标题行
             HStack {
                 Image(systemName: "doc.text.fill")
                     .foregroundColor(.accentColor)
                     .font(.caption)
-                Text("\(vm.selectedStyle.rawValue)文案")
+                Text("\(vm.selectedStyle.displayName)文案")
                     .font(.subheadline.weight(.semibold))
                 
                 Spacer()
@@ -202,7 +201,6 @@ struct ContentView: View {
             
             Divider()
             
-            // 文案内容
             Text(vm.resultText)
                 .font(.body)
                 .lineSpacing(6)
@@ -220,19 +218,19 @@ struct ContentView: View {
 extension WritingStyle {
     var icon: String {
         switch self {
-        case .种草: return "🛍️"
-        case .干货: return "📚"
-        case .情绪: return "💭"
-        case .测评: return "🔍"
+        case .zhongcao: return "🛍️"
+        case .ganhuo: return "📚"
+        case .qingxu: return "💭"
+        case .ceping: return "🔍"
         }
     }
     
     var description: String {
         switch self {
-        case .种草: return "好物安利"
-        case .干货: return "知识分享"
-        case .情绪: return "走心故事"
-        case .测评: return "客观对比"
+        case .zhongcao: return "好物安利"
+        case .ganhuo: return "知识分享"
+        case .qingxu: return "走心故事"
+        case .ceping: return "客观对比"
         }
     }
 }
@@ -242,7 +240,7 @@ extension WritingStyle {
 @MainActor
 class CopywriterViewModel: ObservableObject {
     @Published var inputText = ""
-    @Published var selectedStyle: WritingStyle = .种草
+    @Published var selectedStyle: WritingStyle = .zhongcao
     @Published var resultText = ""
     @Published var isGenerating = false
     @Published var copied = false
