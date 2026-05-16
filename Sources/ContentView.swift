@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var vm = CopywriterViewModel()
     @FocusState private var focused: Bool
-    
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { scroll in
@@ -12,7 +12,7 @@ struct ContentView: View {
                         inputCard
                         stylePicker
                         generateButton
-                        
+
                         if !vm.resultText.isEmpty {
                             resultCard
                                 .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -41,9 +41,7 @@ struct ContentView: View {
             }
         }
     }
-    
-    // MARK: - 输入卡片
-    
+
     private var inputCard: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
@@ -55,10 +53,10 @@ struct ContentView: View {
                 if !vm.inputText.isEmpty {
                     Text("\(vm.inputText.count)")
                         .font(.caption)
-                        .foregroundColor(.tertiary)
+                        .foregroundStyle(.secondary)
                 }
             }
-            
+
             TextEditor(text: $vm.inputText)
                 .focused($focused)
                 .frame(height: 88)
@@ -72,7 +70,7 @@ struct ContentView: View {
                 .overlay(alignment: .topLeading) {
                     if vm.inputText.isEmpty {
                         Text("产品名、关键词、一句话描述...")
-                            .foregroundColor(.tertiary)
+                            .foregroundStyle(.secondary)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 14)
                             .allowsHitTesting(false)
@@ -83,9 +81,7 @@ struct ContentView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
-    
-    // MARK: - 风格选择
-    
+
     private var stylePicker: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
@@ -94,7 +90,7 @@ struct ContentView: View {
                 Text("风格")
                     .font(.subheadline.weight(.semibold))
             }
-            
+
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                 ForEach(WritingStyle.allCases, id: \.self) { style in
                     styleCard(style)
@@ -102,10 +98,10 @@ struct ContentView: View {
             }
         }
     }
-    
+
     private func styleCard(_ style: WritingStyle) -> some View {
         let selected = vm.selectedStyle == style
-        
+
         return Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             withAnimation(.spring(duration: 0.25)) {
@@ -132,9 +128,7 @@ struct ContentView: View {
             )
         }
     }
-    
-    // MARK: - 生成按钮
-    
+
     private var generateButton: some View {
         Button {
             focused = false
@@ -162,26 +156,24 @@ struct ContentView: View {
         }
         .disabled(vm.inputText.isEmpty || vm.isGenerating)
     }
-    
-    // MARK: - 结果卡片
-    
+
     private var resultCard: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // 标题行
             HStack {
                 Image(systemName: "doc.text.fill")
                     .foregroundColor(.accentColor)
                     .font(.caption)
                 Text("\(vm.selectedStyle.rawValue)文案")
                     .font(.subheadline.weight(.semibold))
-                
+
                 Spacer()
-                
+
                 Button {
                     UIPasteboard.general.string = vm.resultText
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     vm.copied = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    Task {
+                        try? await Task.sleep(nanoseconds: 1_500_000_000)
                         vm.copied = false
                     }
                 } label: {
@@ -189,7 +181,7 @@ struct ContentView: View {
                         .font(.caption)
                         .foregroundColor(vm.copied ? .green : .accentColor)
                 }
-                
+
                 Button {
                     Task { await vm.generate() }
                 } label: {
@@ -199,10 +191,9 @@ struct ContentView: View {
                 }
                 .disabled(vm.isGenerating)
             }
-            
+
             Divider()
-            
-            // 文案内容
+
             Text(vm.resultText)
                 .font(.body)
                 .lineSpacing(6)
@@ -215,8 +206,6 @@ struct ContentView: View {
     }
 }
 
-// MARK: - WritingStyle 扩展
-
 extension WritingStyle {
     var icon: String {
         switch self {
@@ -226,7 +215,7 @@ extension WritingStyle {
         case .测评: return "🔍"
         }
     }
-    
+
     var description: String {
         switch self {
         case .种草: return "好物安利"
@@ -237,8 +226,6 @@ extension WritingStyle {
     }
 }
 
-// MARK: - ViewModel
-
 @MainActor
 class CopywriterViewModel: ObservableObject {
     @Published var inputText = ""
@@ -246,9 +233,9 @@ class CopywriterViewModel: ObservableObject {
     @Published var resultText = ""
     @Published var isGenerating = false
     @Published var copied = false
-    
+
     private let ai = AIService.shared
-    
+
     func generate() async {
         guard !inputText.isEmpty else { return }
         isGenerating = true
@@ -257,7 +244,7 @@ class CopywriterViewModel: ObservableObject {
         resultText = r
         isGenerating = false
     }
-    
+
     func clear() {
         inputText = ""
         resultText = ""
@@ -265,6 +252,8 @@ class CopywriterViewModel: ObservableObject {
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }

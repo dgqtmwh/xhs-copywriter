@@ -3,13 +3,13 @@ import Foundation
 /// 小红书文案风格
 enum WritingStyle: String, CaseIterable, Codable {
     /// 种草风 — 亲身体验、好物推荐、生活化
-    case种草 = "种草风"
+    case 种草 = "种草风"
     /// 干货风 — 知识科普、教程指南、数据支撑
-    case干货 = "干货风"
+    case 干货 = "干货风"
     /// 情绪风 — 情感共鸣、故事分享、走心
-    case情绪 = "情绪风"
+    case 情绪 = "情绪风"
     /// 测评风 — 对比评测、优缺点、客观
-    case测评 = "测评风"
+    case 测评 = "测评风"
     
     var promptInstruction: String {
         switch self {

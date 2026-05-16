@@ -47,11 +47,9 @@ actor AIService {
     private func foundationModelsGenerate(prompt: String, input: String, style: WritingStyle) async -> String {
         #if canImport(FoundationModels)
         do {
-            let model = FMGenerativeModel(
-                configuration: .init(model: .appleFoundation)
-            )
-            let result = try await model.generateContent(prompt)
-            return result.text
+            let session = LanguageModelSession()
+            let response = try await session.respond(to: prompt)
+            return response.content
         } catch {
             return fallbackGenerate(input: input, style: style)
         }
