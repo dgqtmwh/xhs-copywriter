@@ -1,19 +1,17 @@
 import Foundation
 
 /// 小红书文案风格
-enum WritingStyle: String, CaseIterable, Codable {
-    /// 种草风 — 亲身体验、好物推荐、生活化
-    case 种草 = "种草风"
-    /// 干货风 — 知识科普、教程指南、数据支撑
-    case 干货 = "干货风"
-    /// 情绪风 — 情感共鸣、故事分享、走心
-    case 情绪 = "情绪风"
-    /// 测评风 — 对比评测、优缺点、客观
-    case 测评 = "测评风"
+enum WritingStyle: String, CaseIterable, Codable, Hashable {
+    case zhongcao = "种草风"
+    case ganhuo = "干货风"
+    case qingxu = "情绪风"
+    case ceping = "测评风"
+    
+    var displayName: String { rawValue }
     
     var promptInstruction: String {
         switch self {
-        case .种草:
+        case .zhongcao:
             return """
             你是一个小红书种草博主。请用以下风格写文案：
             - 开头：亲身体验、真实感受引入
@@ -23,7 +21,7 @@ enum WritingStyle: String, CaseIterable, Codable {
             - 长度：150-300字
             - 包含3-5个相关话题标签（#开头）
             """
-        case .干货:
+        case .ganhuo:
             return """
             你是一个小红书知识博主。请用以下风格写文案：
             - 开头：抛出问题/痛点
@@ -33,7 +31,7 @@ enum WritingStyle: String, CaseIterable, Codable {
             - 长度：200-400字
             - 包含3-5个相关话题标签（#开头）
             """
-        case .情绪:
+        case .qingxu:
             return """
             你是一个小红书情感博主。请用以下风格写文案：
             - 开头：故事/场景代入
@@ -43,7 +41,7 @@ enum WritingStyle: String, CaseIterable, Codable {
             - 长度：150-300字
             - 包含3-5个相关话题标签（#开头）
             """
-        case .测评:
+        case .ceping:
             return """
             你是一个小红书测评博主。请用以下风格写文案：
             - 开头：为什么测、测评背景

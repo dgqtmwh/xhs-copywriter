@@ -62,7 +62,7 @@ actor AIService {
     
     private func fallbackGenerate(input: String, style: WritingStyle) -> String {
         switch style {
-        case .种草:
+        case .zhongcao:
             return """
             姐妹们！发现了一个宝藏，迫不及待来分享 🎉
             
@@ -78,7 +78,7 @@ actor AIService {
             
             #好物分享 #\(input) #宝藏推荐 #入手不亏 #真实体验
             """
-        case .干货:
+        case .ganhuo:
             return """
             【关于 \(input)，你可能不知道的 3 个真相】
             
@@ -97,7 +97,7 @@ actor AIService {
             
             #干货分享 #\(input) #知识科普 #避坑指南 #实用技巧
             """
-        case .情绪:
+        case .qingxu:
             return """
             今天想聊聊 \(input)
             
@@ -111,7 +111,7 @@ actor AIService {
             
             #心情日记 #\(input) #生活感悟 #温暖日常 #随记
             """
-        case .测评:
+        case .ceping:
             return """
             🔍 \(input) 真实测评｜不吹不黑
             
